@@ -31,7 +31,7 @@ return new class extends Migration
             $table->foreign('idJenisJangkaWaktu')->references('idJenisJangkaWaktu')->on('jenisJangkaWaktu');
             $table->foreign('idPeruntukanSewa')->references('idPeruntukanSewa')->on('peruntukanSewa');
             $table->foreign('idStatus')->references('idStatus')->on('status');
-            $table->foreign('createBy')->references('userId')->on('user');
+            $table->foreign('createBy')->references('userId')->on('users');
         });
         
     }

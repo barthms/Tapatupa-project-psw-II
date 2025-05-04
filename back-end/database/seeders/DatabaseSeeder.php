@@ -1,10 +1,11 @@
 <?php
 
+// database/seeders/DatabaseSeeder.php
 namespace Database\Seeders;
 
 use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -13,11 +14,29 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        // Menambahkan data user pertama
+        User::create([
+            'username' => 'admin',
+            'password' => Hash::make('admin123'),
+            'email' => 'admin@example.com',
+            'token' => null,
+            'keterangan' => 'Admin utama',
+            'isDeleted' => false,
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        // Menambahkan data user kedua
+        User::create([
+            'username' => 'user1',
+            'password' => Hash::make('user123'),
+            'email' => 'user1@example.com',
+            'token' => null,
+            'keterangan' => 'User biasa',
+            'isDeleted' => false,
+        ]);
+
+        // Panggil seeder lain jika diperlukan
+        $this->call([
+            JenisPermohonanSeeder::class,
         ]);
     }
 }
