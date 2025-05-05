@@ -1,14 +1,16 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import JenisPermohonanPage from './pages/JenisPermohonan';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import JenisPermohonanPage from "./pages/JenisPermohonanPage";
+// import JenisObjekRetribusiPage from "./pages/JenisObjekRetribusiPage";
 
-function App() {
+
+export default function App() {
     return (
-        <BrowserRouter>
+        <Router>
             <Routes>
-                <Route path="/jenis-permohonan" element={<JenisPermohonanPage />} />
+                <Route path="/" element={<JenisPermohonanPage />} />
+                {/* <Route path="/admin/jenisPermohonan" element={<JenisPermohonanPage />} /> */}
+                {/* <Route path="/admin/jenis-objek" element={<JenisObjekRetribusiPage />} /> */}
             </Routes>
-        </BrowserRouter>
+        </Router>
     );
 }
-
-export default App;

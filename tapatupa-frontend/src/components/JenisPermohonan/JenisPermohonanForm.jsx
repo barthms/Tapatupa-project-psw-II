@@ -1,11 +1,15 @@
 import { useState, useEffect } from 'react';
-import api from '../../api';
+import api from '../../api/Api';
 
 export default function JenisPermohonanForm({ selected, onSuccess }) {
     const [form, setForm] = useState({ jenisPermohonan: '' });
 
     useEffect(() => {
-        if (selected) setForm(selected);
+        if (selected) {
+            setForm({ jenisPermohonan: selected.jenisPermohonan });
+        } else {
+            setForm({ jenisPermohonan: '' });
+        }
     }, [selected]);
 
     const handleChange = (e) => {
@@ -14,15 +18,17 @@ export default function JenisPermohonanForm({ selected, onSuccess }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
-        if (selected) {
-            await api.put(`/jenis-permohonan/${selected.idJenisPermohonan}`, form);
-        } else {
-            await api.post('/jenis-permohonan', form);
+        try {
+            if (selected) {
+                await api.put(`/jenisPermohonan/${selected.idJenisPermohonan}`, form);
+            } else {
+                await api.post('/jenisPermohonan', form);
+            }
+            setForm({ jenisPermohonan: '' });
+            onSuccess();
+        } catch (err) {
+            alert('Gagal menyimpan data');
         }
-
-        setForm({ jenisPermohonan: '' });
-        onSuccess();
     };
 
     return (
