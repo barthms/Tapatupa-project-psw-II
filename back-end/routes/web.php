@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\JenisPermohonanController;
+use App\Http\Controllers\API\JenisJangkaWaktuController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -9,4 +10,6 @@ Route::get('/', function () {
 
 Route::prefix('api')->group(function (){
     Route::apiResource('jenisPermohonan', JenisPermohonanController::class);
+
+    Route::apiResource('/jenisJangkaWaktu', JenisJangkaWaktuController::class);
 });
