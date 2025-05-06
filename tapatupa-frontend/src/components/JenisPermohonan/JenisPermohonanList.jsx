@@ -1,37 +1,42 @@
-import { useEffect, useState } from 'react';
-import api from '../../api';
+import React, { useEffect, useState } from 'react';
+import { fetchJenisPermohonan } from '../../api/Api';
 
-export default function JenisPermohonanList({ onEdit }) {
+const JenisPermohonanList = () => {
     const [data, setData] = useState([]);
 
-    const fetchData = async () => {
-        const res = await api.get('/jenis-permohonan');
-        setData(res.data);
-    };
-
-    const handleDelete = async (id) => {
-        if (confirm('Yakin ingin menghapus?')) {
-            await api.delete(`/jenis-permohonan/${id}`);
-            fetchData();
-        }
-    };
-
     useEffect(() => {
-        fetchData();
+        const load = async () => {
+            try {
+                const result = await fetchJenisPermohonan();
+                setData(result);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        load();
     }, []);
 
     return (
         <div>
-            <h2>Daftar Jenis Permohonan</h2>
-            <ul>
-                {data.map(item => (
-                    <li key={item.idJenisPermohonan}>
-                        {item.jenisPermohonan}
-                        <button onClick={() => onEdit(item)}>Edit</button>
-                        <button onClick={() => handleDelete(item.idJenisPermohonan)}>Hapus</button>
-                    </li>
-                ))}
-            </ul>
+            <h3>Daftar Jenis Permohonan</h3>
+            <table className="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama Permohonan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((jenis) => (
+                        <tr key={jenis.parentId}>
+                            <td>{jenis.parentId}</td>
+                            <td>{jenis.jenisPermohonan}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
         </div>
     );
-}
+};
+
+export default JenisPermohonanList;
