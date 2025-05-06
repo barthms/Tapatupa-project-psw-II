@@ -11,19 +11,19 @@ class JenisPermohonanSeeder extends Seeder
     {
         JenisPermohonan::insert([
             [
-                'parentId' => null,
+                'parentId' => 1,
                 'jenisPermohonan' => 'Sewa Tanah Kosong',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'parentId' => null,
+                'parentId' => 2,
                 'jenisPermohonan' => 'Sewa Bangunan Pemerintah',
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
-                'parentId' => null,
+                'parentId' => 3,
                 'jenisPermohonan' => 'Sewa Ruko',
                 'created_at' => now(),
                 'updated_at' => now(),

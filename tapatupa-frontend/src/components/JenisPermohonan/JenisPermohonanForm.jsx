@@ -1,46 +1,84 @@
-import { useState, useEffect } from 'react';
-import api from '../../api/Api';
+import React, { useEffect, useState } from 'react';
+import { fetchJenisPermohonan } from '../../api/Api';
+import axios from 'axios';
 
-export default function JenisPermohonanForm({ selected, onSuccess }) {
-    const [form, setForm] = useState({ jenisPermohonan: '' });
+const JenisPermohonanForm = ({ onSuccess }) => {
+    const [form, setForm] = useState({
+        parentId: '',
+        jenisPermohonan: ''
+    });
+
+    const [parentOptions, setParentOptions] = useState([]);
 
     useEffect(() => {
-        if (selected) {
-            setForm({ jenisPermohonan: selected.jenisPermohonan });
-        } else {
-            setForm({ jenisPermohonan: '' });
-        }
-    }, [selected]);
+        const loadParentOptions = async () => {
+            try {
+                const res = await fetchJenisPermohonan(); // endpoint ambil semua jenis
+                setParentOptions(res.data.data);
+            } catch (error) {
+                console.error('Gagal memuat data parent:', error);
+            }
+        };
+
+        loadParentOptions();
+    }, []);
 
     const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
+        const { name, value } = e.target;
+        setForm(prev => ({ ...prev, [name]: value }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            if (selected) {
-                await api.put(`/jenisPermohonan/${selected.idJenisPermohonan}`, form);
-            } else {
-                await api.post('/jenisPermohonan', form);
-            }
-            setForm({ jenisPermohonan: '' });
-            onSuccess();
-        } catch (err) {
-            alert('Gagal menyimpan data');
+            await axios.post('/api/jenisPermohonan', form);
+            alert('Data berhasil disimpan!');
+            setForm({ parentId: '', jenisPermohonan: '' });
+            if (onSuccess) onSuccess(); // trigger reload list
+        } catch (error) {
+            console.error('Gagal menyimpan data:', error);
+            alert('Gagal menyimpan data!');
         }
     };
 
     return (
-        <form onSubmit={handleSubmit}>
-            <input
-                name="jenisPermohonan"
-                value={form.jenisPermohonan}
-                onChange={handleChange}
-                placeholder="Nama Jenis Permohonan"
-                required
-            />
-            <button type="submit">{selected ? 'Update' : 'Tambah'}</button>
-        </form>
+        <div className="card p-4">
+            <h4>Form Tambah Jenis Permohonan</h4>
+            <form onSubmit={handleSubmit}>
+                <div className="mb-3">
+                    <label htmlFor="parentId" className="form-label">Parent Permohonan (Opsional)</label>
+                    <select
+                        name="parentId"
+                        id="parentId"
+                        className="form-control"
+                        value={form.parentId}
+                        onChange={handleChange}
+                    >
+                        <option value="">-- Tidak ada Parent --</option>
+                        {parentOptions.map((opt) => (
+                            <option key={opt.idJenisPermohonan} value={opt.idJenisPermohonan}>
+                                {opt.jenisPermohonan}
+                            </option>
+                        ))}
+                    </select>
+                </div>
+
+                <div className="mb-3">
+                    <label htmlFor="jenisPermohonan" className="form-label">Nama Jenis Permohonan</label>
+                    <input
+                        type="text"
+                        name="jenisPermohonan"
+                        id="jenisPermohonan"
+                        className="form-control"
+                        value={form.jenisPermohonan}
+                        onChange={handleChange}
+                        required
+                    />
+                </div>
+
+                <button type="submit" className="btn btn-primary">Simpan</button>
+            </form>
+        </div>
     );
-}
+};
+export default JenisPermohonanForm;
