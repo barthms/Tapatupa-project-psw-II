@@ -8,7 +8,7 @@ const Sidebar = () => {
             <h2 className="sidebar-title">Menu</h2>
             <ul className="sidebar-menu">
                 <li>
-                    <NavLink to="/jenis-permohonan" activeClassName="active">
+                    <NavLink to="/" activeClassName="active">
                         <i className="fas fa-file-alt"></i> Jenis Permohonan
                     </NavLink>
                 </li>
