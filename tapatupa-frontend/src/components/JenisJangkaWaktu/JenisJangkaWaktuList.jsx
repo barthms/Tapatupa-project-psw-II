@@ -1,0 +1,42 @@
+import React, { useEffect, useState } from 'react';
+import axios from 'axios';
+
+const JenisJangkaWaktuList = () => {
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const load = async () => {
+            try {
+                const res = await axios.get('/api/jenisJangkaWaktu');
+                setData(res.data);
+            } catch (err) {
+                console.error(err);
+            }
+        };
+        load();
+    }, []);
+
+    return (
+        <div>
+            <h3>Daftar Jenis Jangka Waktu</h3>
+            <table className="table table-bordered mt-3">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {data.map((item) => (
+                        <tr key={item.idJenisJangkaWaktu}>
+                            <td>{item.idJenisJangkaWaktu}</td>
+                            <td>{item.namaJenisJangkaWaktu}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        </div>
+    );
+};
+
+export default JenisJangkaWaktuList;
