@@ -1,11 +1,9 @@
 <?php
-// app/Http/Controllers/Api/JenisJangkaWaktuController.php
+namespace App\Http\Controllers\API;
 
-namespace App\Http\Controllers\Api;
-
+use App\Http\Controllers\Controller;
 use App\Models\JenisJangkaWaktu;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 
 class JenisJangkaWaktuController extends Controller
 {
@@ -16,23 +14,31 @@ class JenisJangkaWaktuController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $data = $request->validate([
             'jenisJangkaWaktu' => 'required|string|max:255',
             'keterangan' => 'nullable|string',
         ]);
 
-        return JenisJangkaWaktu::create([
-            'jenisJangkaWaktu' => $request->jenisJangkaWaktu,
-            'keterangan' => $request->keterangan,
-        ]);
+        $item = JenisJangkaWaktu::create($data);
+        return response()->json($item, 201);
+    }
+
+    public function show($id)
+    {
+        return JenisJangkaWaktu::findOrFail($id);
+    }
+
+    public function update(Request $request, $id)
+    {
+        $item = JenisJangkaWaktu::findOrFail($id);
+        $item->update($request->only('jenisJangkaWaktu', 'keterangan'));
+        return response()->json($item);
     }
 
     public function destroy($id)
     {
-        $data = JenisJangkaWaktu::findOrFail($id);
-        $data->isDeleted = true;
-        $data->save();
-
-        return response()->json(['message' => 'Berhasil dihapus (soft delete)']);
+        $item = JenisJangkaWaktu::findOrFail($id);
+        $item->update(['isDeleted' => true]);
+        return response()->json(['message' => 'Deleted']);
     }
 }

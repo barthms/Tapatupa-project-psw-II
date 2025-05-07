@@ -15,28 +15,29 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Menambahkan data user pertama
-        User::create([
-            'username' => 'admin',
-            'password' => Hash::make('admin123'),
-            'email' => 'admin@example.com',
-            'token' => null,
-            'keterangan' => 'Admin utama',
-            'isDeleted' => false,
-        ]);
+        // User::create([
+        //     'username' => 'admin',
+        //     'password' => Hash::make('admin123'),
+        //     'email' => 'admin@example.com',
+        //     'token' => null,
+        //     'keterangan' => 'Admin utama',
+        //     'isDeleted' => false,
+        // ]);
 
-        // Menambahkan data user kedua
-        User::create([
-            'username' => 'user1',
-            'password' => Hash::make('user123'),
-            'email' => 'user1@example.com',
-            'token' => null,
-            'keterangan' => 'User biasa',
-            'isDeleted' => false,
-        ]);
+        // // Menambahkan data user kedua
+        // User::create([
+        //     'username' => 'user1',
+        //     'password' => Hash::make('user123'),
+        //     'email' => 'user1@example.com',
+        //     'token' => null,
+        //     'keterangan' => 'User biasa',
+        //     'isDeleted' => false,
+        // ]);
 
         // Panggil seeder lain jika diperlukan
         $this->call([
             JenisPermohonanSeeder::class,
+            JenisJangkaWaktuSeeder::class,
         ]);
     }
 }
