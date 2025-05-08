@@ -8,7 +8,7 @@ const JenisStatusList = () => {
         const load = async () => {
             try {
                 const result = await axios.get('/api/jenis-status');
-                setData(result.data);
+                setData(result);
             } catch (err) {
                 console.error(err);
             }
