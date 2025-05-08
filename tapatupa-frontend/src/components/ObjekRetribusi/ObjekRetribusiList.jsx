@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchObjekRetribusi } from '../../api/Api';
 
 const ObjekRetribusiList = () => {
     const [data, setData] = useState([]);
@@ -7,10 +7,10 @@ const ObjekRetribusiList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const result = await axios.get('/api/objekRetribusi');
-                setData(result.data);
+                const result = await fetchObjekRetribusi();
+                setData(result);
             } catch (err) {
-                console.error(err);
+                console.error('Gagal memuat', err);
             }
         };
         load();

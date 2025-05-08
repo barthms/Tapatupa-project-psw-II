@@ -13,18 +13,58 @@ const Sidebar = () => {
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/objek-retribusi" activeClassName="active">
+                    <NavLink to="/lokasiObjek" activeClassName="active">
+                        <i className="fas fa-layer-group"></i> Lokasi Objek
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/jenisObjekRetribusi" activeClassName="active">
+                        <i className="fas fa-layer-group"></i> Jenis Objek Retribusi
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/objekRetribusi" activeClassName="active">
                         <i className="fas fa-layer-group"></i> Objek Retribusi
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/wajib-retribusi" activeClassName="active">
-                        <i className="fas fa-users"></i> Wajib Retribusi
+                    <NavLink to="/jenisJangkaWaktu" activeClassName="active">
+                        <i className="fas fa-layer-group"></i> Jenis Jangka Waktu
                     </NavLink>
                 </li>
                 <li>
-                    <NavLink to="/permohonan-sewa" activeClassName="active">
+                    <NavLink to="/tarifObjekRetribusi" activeClassName="active">
+                        <i className="fas fa-users"></i> Tarif Objek Retribusi
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/jangkaWaktuSewa" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Jangka Waktu Sewa
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/permohonanSewa" activeClassName="active">
                         <i className="fas fa-handshake"></i> Permohonan Sewa
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/wajibRetibusi" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Wajib Retribusi
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/status" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Status
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/jenisStatus" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Jenis Status
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/peruntukanSewa" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Peruntukan Sewa
                     </NavLink>
                 </li>
             </ul>

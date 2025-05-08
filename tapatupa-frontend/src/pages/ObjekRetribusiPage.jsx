@@ -12,7 +12,7 @@ const ObjekRetribusiPage = () => {
 
     return (
         <AdminLayout>
-            <ObjekRetribusiForm onSuccess={triggerReload} />
+            {/* <ObjekRetribusiForm onSuccess={triggerReload} /> */}
             <hr />
             <ObjekRetribusiList key={reload} />
         </AdminLayout>

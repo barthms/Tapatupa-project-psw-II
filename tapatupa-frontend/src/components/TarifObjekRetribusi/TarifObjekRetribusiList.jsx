@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { fetchTarifObjekRetribusi } from '../../api/Api';
 
 const TarifObjekRetribusiList = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
         const load = async () => {
-            const res = await axios.get('/api/tarifObjekRetribusi');
-            setData(res.data);
+            try {
+                const res = fetchTarifObjekRetribusi();
+                setData(res);
+            } catch (err) {
+                console.error(err);
+            }
         };
         load();
     }, []);

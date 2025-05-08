@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { fetchJenisStatus } from '../../api/Api';
 
 const JenisStatusList = () => {
     const [data, setData] = useState([]);
@@ -7,8 +8,8 @@ const JenisStatusList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const result = await axios.get('/api/jenis-status');
-                setData(result.data);
+                const result = await fetchJenisStatus();
+                setData(result);
             } catch (err) {
                 console.error(err);
             }

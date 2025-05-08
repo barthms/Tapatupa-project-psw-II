@@ -17,18 +17,18 @@ export default function App() {
         <Router>
             <Routes>
                 <Route path="/" element={<JenisPermohonanPage />} />
-                <Route path="/jenis-permohonan" element={<JenisPermohonanPage />} />
-                <Route path="/lokasi-objek" element={<LokasiObjekRetribusiPage />} />
-                <Route path="/jenis-objek-retribusi" element={<JenisObjekRetribusiPage />} />
-                <Route path="/objek-retribusi" element={<ObjekRetribusiPage />} />
-                <Route path="/jenis-jangka-waktu" element={<JenisJangkaWaktuPage />} />
-                <Route path="/tarif-objek-retribusi" element={<TarifObjekRetribusiPage />} />
-                <Route path="/jangka-waktu-sewa" element={<JangkaWaktuSewaPage />} />
-                <Route path="/permohonan-sewa" element={<PermohonanSewaPage />} />
-                <Route path="/wajib-retribusi" element={<WajibRetribusiPage />} />
+                <Route path="/jenisPermohonan" element={<JenisPermohonanPage />} />
+                <Route path="/lokasiObjek" element={<LokasiObjekRetribusiPage />} />
+                <Route path="/jenisObjekRetribusi" element={<JenisObjekRetribusiPage />} />
+                <Route path="/objekRetribusi" element={<ObjekRetribusiPage />} />
+                <Route path="/jenisJangkaWaktu" element={<JenisJangkaWaktuPage />} />
+                <Route path="/tarifObjekRetribusi" element={<TarifObjekRetribusiPage />} />
+                <Route path="/jangkaWaktuSewa" element={<JangkaWaktuSewaPage />} />
+                <Route path="/permohonanSewa" element={<PermohonanSewaPage />} />
+                <Route path="/wajibRetibusi" element={<WajibRetribusiPage />} />
                 <Route path="/status" element={<StatusPage />} />
-                <Route path="/jenis-status" element={<JenisStatusPage />} />
-                <Route path="/peruntukan-sewa" element={<PeruntukanSewaPage />} />
+                <Route path="/jenisStatus" element={<JenisStatusPage />} />
+                <Route path="/peruntukanSewa" element={<PeruntukanSewaPage />} />
             </Routes>
         </Router>
     );

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchJenisJangkaWaktu } from '../../api/Api';
 
 const JenisJangkaWaktuList = () => {
     const [data, setData] = useState([]);
@@ -7,8 +7,8 @@ const JenisJangkaWaktuList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const res = await axios.get('/api/jenisJangkaWaktu');
-                setData(res.data);
+                const res = await fetchJenisJangkaWaktu();
+                setData(res);
             } catch (err) {
                 console.error(err);
             }

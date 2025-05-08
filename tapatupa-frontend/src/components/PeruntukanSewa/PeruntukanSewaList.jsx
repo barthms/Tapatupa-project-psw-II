@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { fetchPeruntukanSewa } from '../../api/Api';
 
 const PeruntukanSewaList = () => {
     const [data, setData] = useState([]);
@@ -7,8 +8,8 @@ const PeruntukanSewaList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const result = await axios.get('/api/peruntukan-sewa');
-                setData(result.data);
+                const result = await fetchPeruntukanSewa();
+                setData(result);
             } catch (err) {
                 console.error(err);
             }
