@@ -1,4 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import JenisPermohonanPage from "./pages/JenisPermohonanPage";
 import LokasiObjekRetribusiPage from "./pages/LokasiObjekRetribusiPage";
 import JenisObjekRetribusiPage from "./pages/JenisObjekRetribusiPage";
@@ -16,7 +17,7 @@ export default function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<JenisPermohonanPage />} />
+                <Route path="/" element={<LandingPage />} />
                 <Route path="/jenisPermohonan" element={<JenisPermohonanPage />} />
                 <Route path="/lokasiObjek" element={<LokasiObjekRetribusiPage />} />
                 <Route path="/jenisObjekRetribusi" element={<JenisObjekRetribusiPage />} />
