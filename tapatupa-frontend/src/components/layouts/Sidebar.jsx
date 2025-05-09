@@ -118,6 +118,26 @@ const Sidebar = () => {
                         </ul>
                     )}
                 </li>
+                <li>
+                    <NavLink to="/wajibRetibusi" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Wajib Retribusi
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/status" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Status
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/jenisStatus" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Jenis Status
+                    </NavLink>
+                </li>
+                <li>
+                    <NavLink to="/peruntukanSewa" activeClassName="active">
+                        <i className="fas fa-handshake"></i> Peruntukan Sewa
+                    </NavLink>
+                </li>
             </ul>
         </aside>
     );

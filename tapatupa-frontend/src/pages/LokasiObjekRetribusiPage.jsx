@@ -1,6 +1,6 @@
 import React from 'react';
 import AdminLayout from '../components/layouts/AdminLayout';
-import JenisPermohonanList from '../components/JenisPermohonan/JenisPermohonanList';
+import LokasiObjekRetribusiList from '../components/LokasiObjekRetribusi/LokasiObjekRetribusiList';
 import JenisPermohonanForm from '../components/JenisPermohonan/JenisPermohonanForm';
 
 const JenisPermohonanPage = () => {
@@ -15,7 +15,7 @@ const JenisPermohonanPage = () => {
             <AdminLayout>
                 <JenisPermohonanForm onSuccess={triggerReload} />
                 <hr />
-                <JenisPermohonanList key={reload} />
+                <LokasiObjekRetribusiList key={reload} />
             </AdminLayout>
         </div>
     );

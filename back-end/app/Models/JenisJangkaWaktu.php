@@ -1,17 +1,23 @@
 <?php
-// app/Models/JenisJangkaWaktu.php
-
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class JenisJangkaWaktu extends Model
 {
-    protected $table = 'jenisJangkaWaktu'; // pakai nama tabel custom
+    use HasFactory;
 
-    protected $primaryKey = 'idJenisJangkaWaktu'; // primary key custom
+    protected $table = 'jenisJangkaWaktu';
+    protected $primaryKey = 'idJenisJangkaWaktu';
 
-    protected $fillable = ['jenisJangkaWaktu', 'keterangan', 'isDeleted'];
+    protected $fillable = [
+        'jenisJangkaWaktu',
+        'keterangan',
+        'isDeleted',
+    ];
 
-    public $timestamps = true;
+    protected $casts = [
+        'isDeleted' => 'boolean',
+    ];
 }

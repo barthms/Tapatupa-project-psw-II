@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
+import { fetchStatus } from '../../api/Api';
 
 const StatusList = () => {
     const [data, setData] = useState([]);
@@ -7,8 +8,8 @@ const StatusList = () => {
     useEffect(() => {
         const load = async () => {
             try {
-                const result = await axios.get('/api/status');
-                setData(result.data);
+                const result = await fetchStatus();
+                setData(result);
             } catch (err) {
                 console.error(err);
             }

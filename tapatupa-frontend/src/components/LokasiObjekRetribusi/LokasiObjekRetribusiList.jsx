@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { fetchLokasiObjekRetribusi } from '../../api/Api';
 
 const LokasiObjekRetribusiList = () => {
     const [data, setData] = useState([]);
@@ -7,8 +7,8 @@ const LokasiObjekRetribusiList = () => {
     useEffect(() => {
         const loadData = async () => {
             try {
-                const res = await axios.get('/api/lokasiObjekRetribusi');
-                setData(res.data.data);
+                const res = await fetchLokasiObjekRetribusi();
+                setData(res);
             } catch (error) {
                 console.error('Gagal memuat data:', error);
             }

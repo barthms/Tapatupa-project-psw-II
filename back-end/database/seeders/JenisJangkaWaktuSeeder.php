@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use App\Models\JenisPermohonan;
+use App\Models\JenisJangkaWaktu;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +13,7 @@ class JenisJangkaWaktuSeeder extends Seeder
      */
     public function run(): void
     {
-        JenisPermohonan::insert([
+        JenisJangkaWaktu::insert([
             [
                 'jenisJangkaWaktu' => 'Harian',
                 'keterangan' => 'Permohonan berlaku selama satu hari',
@@ -21,7 +21,7 @@ class JenisJangkaWaktuSeeder extends Seeder
                 'updated_at' => now(),
             ],
             [
-                'jenisJangkaWaktu' => 'Mingguan',
+                'jenisJangkaWaktu' => 'Mingguan', 
                 'keterangan' => 'Permohonan berlaku selama satu minggu',
                 'created_at' => now(),
                 'updated_at' => now(),
@@ -37,7 +37,6 @@ class JenisJangkaWaktuSeeder extends Seeder
                 'keterangan' => 'Permohonan berlaku selama satu tahun',
                 'created_at' => now(),
                 'updated_at' => now(),
-            ],
-        ]);
+            ],        ]);
     }
 }
