@@ -24,13 +24,15 @@ const JenisJangkaWaktuList = () => {
                     <tr>
                         <th>ID</th>
                         <th>Nama</th>
+                        <th>Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((item) => (
                         <tr key={item.idJenisJangkaWaktu}>
                             <td>{item.idJenisJangkaWaktu}</td>
-                            <td>{item.namaJenisJangkaWaktu}</td>
+                            <td>{item.keterangan}</td>
+                            <td>{item.jenisJangkaWaktu}</td>
                         </tr>
                     ))}
                 </tbody>

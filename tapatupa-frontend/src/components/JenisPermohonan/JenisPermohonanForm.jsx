@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchJenisPermohonan } from '../../api/Api';
+import { fetchJenisPermohonan, createJenisPermohonan } from '../../api/JenisPermohonanAPI';
 import axios from 'axios';
 
 const JenisPermohonanForm = ({ onSuccess }) => {
@@ -30,16 +30,24 @@ const JenisPermohonanForm = ({ onSuccess }) => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+
+        const payload = {
+            ...form,
+            parentId: form.parentId === '' ? null : form.parentId
+        };
+
         try {
-            await axios.post('/api/jenisPermohonan', form);
+            await createJenisPermohonan(payload); // LANGSUNG PANGGIL fungsinya
             alert('Data berhasil disimpan!');
             setForm({ parentId: '', jenisPermohonan: '' });
             if (onSuccess) onSuccess(); // trigger reload list
         } catch (error) {
-            console.error('Gagal menyimpan data:', error);
+            console.error('Gagal menyimpan data:', error.response?.data || error.message);
             alert('Gagal menyimpan data!');
         }
     };
+
+
 
     return (
         <div className="card p-4">

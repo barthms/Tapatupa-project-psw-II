@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { fetchJenisPermohonan } from '../../api/Api';
+import { fetchJenisPermohonan } from '../../api/JenisPermohonanAPI';
 
 const JenisPermohonanList = () => {
     const [data, setData] = useState([]);
