@@ -12,10 +12,12 @@ use Illuminate\Validation\ValidationException;
 
 class JenisPermohonanController extends Controller
 {
+
     /**
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
+
     {
         $query = JenisPermohonan::query();
         
@@ -39,12 +41,14 @@ class JenisPermohonanController extends Controller
         return JenisPermohonanResource::collection($jenisPermohonan);
     }
 
+
     /**
      * Store a newly created resource in storage.
      * 
      * @throws ValidationException
      */
     public function store(Request $request): JenisPermohonanResource
+
     {
         $validated = $request->validate([
             'parentId' => 'nullable|exists:jenisPermohonan,idJenisPermohonan',
@@ -56,10 +60,12 @@ class JenisPermohonanController extends Controller
         return new JenisPermohonanResource($jenisPermohonan);
     }
 
+
     /**
      * Display the specified resource.
      */
     public function show(Request $request, string $id): JenisPermohonanResource
+
     {
         $query = JenisPermohonan::query();
         
@@ -73,12 +79,14 @@ class JenisPermohonanController extends Controller
         return new JenisPermohonanResource($jenisPermohonan);
     }
 
+
     /**
      * Update the specified resource in storage.
      * 
      * @throws ValidationException
      */
     public function update(Request $request, string $id): JenisPermohonanResource
+
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
 
@@ -98,11 +106,13 @@ class JenisPermohonanController extends Controller
 
         return new JenisPermohonanResource($jenisPermohonan);
     }
-
+  
+  
     /**
      * Soft delete the specified resource.
      */
     public function destroy(string $id): Response
+
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
         $jenisPermohonan->update(['isDeleted' => true]);

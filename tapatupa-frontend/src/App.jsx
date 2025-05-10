@@ -1,22 +1,35 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import JenisPermohonanPage from "./pages/JenisPermohonanPage";
 import LokasiObjekRetribusiPage from "./pages/LokasiObjekRetribusiPage";
 import JenisObjekRetribusiPage from "./pages/JenisObjekRetribusiPage";
 import ObjekRetribusiPage from "./pages/ObjekRetribusiPage";
 import JenisJangkaWaktuPage from "./pages/JenisJangkaWaktuPage";
 import TarifObjekRetribusiPage from './pages/TarifObjekRetribusiPage';
+import JangkaWaktuSewaPage from "./pages/JangkaWaktuSewaPage";
+import PermohonanSewaPage from './pages/PermohonanSewaPage';
+import WajibRetribusiPage from './pages/WajibRetribusiPage';
+import StatusPage from "./pages/StatusPage";
+import JenisStatusPage from "./pages/JenisStatusPage";
+import PeruntukanSewaPage from "./pages/PeruntukanSewaPage";
 
 export default function App() {
     return (
         <Router>
             <Routes>
-                <Route path="/" element={<JenisPermohonanPage />} />
-                <Route path="/admin/jenis-permohonan" element={<JenisPermohonanPage />} />
-                <Route path="/admin/lokasi-objek" element={<LokasiObjekRetribusiPage />} />
-                <Route path="/admin/jenis-objek" element={<JenisObjekRetribusiPage />} />
-                <Route path="/admin/objek-retribusi" element={<ObjekRetribusiPage />} />
-                <Route path="/admin/jenis-jangka-waktu" element={<JenisJangkaWaktuPage />} />
-                <Route path="/admin/tarif-objek" element={<TarifObjekRetribusiPage />} />
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/jenisPermohonan" element={<JenisPermohonanPage />} />
+                <Route path="/lokasiObjek" element={<LokasiObjekRetribusiPage />} />
+                <Route path="/jenisObjekRetribusi" element={<JenisObjekRetribusiPage />} />
+                <Route path="/objekRetribusi" element={<ObjekRetribusiPage />} />
+                <Route path="/jenisJangkaWaktu" element={<JenisJangkaWaktuPage />} />
+                <Route path="/tarifObjekRetribusi" element={<TarifObjekRetribusiPage />} />
+                <Route path="/jangkaWaktuSewa" element={<JangkaWaktuSewaPage />} />
+                <Route path="/permohonanSewa" element={<PermohonanSewaPage />} />
+                <Route path="/wajibRetibusi" element={<WajibRetribusiPage />} />
+                <Route path="/status" element={<StatusPage />} />
+                <Route path="/jenisStatus" element={<JenisStatusPage />} />
+                <Route path="/peruntukanSewa" element={<PeruntukanSewaPage />} />
             </Routes>
         </Router>
     );

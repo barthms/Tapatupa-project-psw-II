@@ -1,16 +1,17 @@
 import React, { useEffect, useState } from 'react';
-import { fetchObjekRetribusi } from '../../api/Api';
+import axios from 'axios';
+import { fetchPeruntukanSewa } from '../../api/Api';
 
-const ObjekRetribusiList = () => {
+const PeruntukanSewaList = () => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
         const load = async () => {
             try {
-                const result = await fetchObjekRetribusi();
+                const result = await fetchPeruntukanSewa();
                 setData(result);
             } catch (err) {
-                console.error('Gagal memuat', err);
+                console.error(err);
             }
         };
         load();
@@ -18,21 +19,21 @@ const ObjekRetribusiList = () => {
 
     return (
         <div>
-            <h3>Daftar Objek Retribusi</h3>
+            <h3>Daftar Peruntukan Sewa</h3>
             <table className="table table-bordered mt-3">
                 <thead>
                     <tr>
                         <th>ID</th>
-                        <th>Kode</th>
-                        <th>Nama Objek</th>
+                        <th>Peruntukan</th>
+                        <th>Keterangan</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((item) => (
-                        <tr key={item.idObjekRetribusi}>
-                            <td>{item.idObjekRetribusi}</td>
-                            <td>{item.kodeObjekRetribusi}</td>
-                            <td>{item.objekRetribusi}</td>
+                        <tr key={item.idPeruntukanSewa}>
+                            <td>{item.idPeruntukanSewa}</td>
+                            <td>{item.peruntukanSewa}</td>
+                            <td>{item.keterangan}</td>
                         </tr>
                     ))}
                 </tbody>
@@ -41,4 +42,4 @@ const ObjekRetribusiList = () => {
     );
 };
 
-export default ObjekRetribusiList;
+export default PeruntukanSewaList;
