@@ -8,7 +8,7 @@ const JenisPermohonanList = () => {
         const load = async () => {
             try {
                 const result = await fetchJenisPermohonan();
-                setData(result);
+                setData(result.data);
             } catch (err) {
                 console.error(err);
             }
