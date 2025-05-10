@@ -14,7 +14,7 @@ const JenisPermohonanForm = ({ onSuccess }) => {
         const loadParentOptions = async () => {
             try {
                 const res = await fetchJenisPermohonan(); // endpoint ambil semua jenis
-                setParentOptions(res.data.data);
+                setParentOptions(res.data);
             } catch (error) {
                 console.error('Gagal memuat data parent:', error);
             }
@@ -33,7 +33,7 @@ const JenisPermohonanForm = ({ onSuccess }) => {
 
         const payload = {
             ...form,
-            parentId: form.parentId === '' ? null : form.parentId
+            parentId: form.parentId === '' ? null : parseInt(form.parentId)
         };
 
         try {

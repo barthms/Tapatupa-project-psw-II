@@ -3,20 +3,48 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\JenisPermohonanResource;
 use App\Models\JenisPermohonan;
 use Illuminate\Http\Request;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
+use Illuminate\Http\Response;
+use Illuminate\Validation\ValidationException;
 
 class JenisPermohonanController extends Controller
 {
-    // GET /api/jenisPermohonan
-    public function index()
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): AnonymousResourceCollection
     {
-        $data = JenisPermohonan::where('isDeleted', false)->get();
-        return response()->json($data);
+        $query = JenisPermohonan::query();
+        
+        // Only show non-deleted items by default
+        if (!$request->has('showDeleted') || !$request->showDeleted) {
+            $query->where('isDeleted', false);
+        }
+        
+        // Option to include children
+        if ($request->has('withChildren') && $request->withChildren) {
+            $query->with('children');
+        }
+        
+        // Option to only show root items (no parent)
+        if ($request->has('onlyRoot') && $request->onlyRoot) {
+            $query->whereNull('parentId');
+        }
+        
+        $jenisPermohonan = $query->get();
+        
+        return JenisPermohonanResource::collection($jenisPermohonan);
     }
 
-    // POST /api/jenisPermohonan
-    public function store(Request $request)
+    /**
+     * Store a newly created resource in storage.
+     * 
+     * @throws ValidationException
+     */
+    public function store(Request $request): JenisPermohonanResource
     {
         $validated = $request->validate([
             'parentId' => 'nullable|exists:jenisPermohonan,idJenisPermohonan',
@@ -25,38 +53,71 @@ class JenisPermohonanController extends Controller
 
         $jenisPermohonan = JenisPermohonan::create($validated);
 
-        return response()->json($jenisPermohonan, 201);
+        return new JenisPermohonanResource($jenisPermohonan);
     }
 
-    // GET /api/jenisPermohonan/{id}
-    public function show($id)
+    /**
+     * Display the specified resource.
+     */
+    public function show(Request $request, string $id): JenisPermohonanResource
     {
-        $jenisPermohonan = JenisPermohonan::findOrFail($id);
-        return response()->json($jenisPermohonan);
+        $query = JenisPermohonan::query();
+        
+        // Option to include children
+        if ($request->has('withChildren') && $request->withChildren) {
+            $query->with('children');
+        }
+        
+        $jenisPermohonan = $query->findOrFail($id);
+        
+        return new JenisPermohonanResource($jenisPermohonan);
     }
 
-    // PUT /api/jenisPermohonan/{id}
-    public function update(Request $request, $id)
+    /**
+     * Update the specified resource in storage.
+     * 
+     * @throws ValidationException
+     */
+    public function update(Request $request, string $id): JenisPermohonanResource
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
 
         $validated = $request->validate([
             'parentId' => 'nullable|exists:jenisPermohonan,idJenisPermohonan',
             'jenisPermohonan' => 'required|string|max:255',
-            'isDeleted' => 'boolean',
         ]);
+
+        // Prevent setting itself as parent
+        if (isset($validated['parentId']) && $validated['parentId'] == $id) {
+            throw ValidationException::withMessages([
+                'parentId' => ['Cannot set itself as parent'],
+            ]);
+        }
 
         $jenisPermohonan->update($validated);
 
-        return response()->json($jenisPermohonan);
+        return new JenisPermohonanResource($jenisPermohonan);
     }
 
-    // DELETE /api/jenisPermohonan/{id}
-    public function destroy($id)
+    /**
+     * Soft delete the specified resource.
+     */
+    public function destroy(string $id): Response
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
         $jenisPermohonan->update(['isDeleted' => true]);
 
-        return response()->json(['message' => 'Deleted successfully']);
+        return response()->noContent();
+    }
+    
+    /**
+     * Restore a soft-deleted resource.
+     */
+    public function restore(string $id): JenisPermohonanResource
+    {
+        $jenisPermohonan = JenisPermohonan::findOrFail($id);
+        $jenisPermohonan->update(['isDeleted' => false]);
+        
+        return new JenisPermohonanResource($jenisPermohonan);
     }
 }
