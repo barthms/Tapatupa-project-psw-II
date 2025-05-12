@@ -4,13 +4,23 @@ import JangkaWaktuSewaForm from '../components/JangkaWaktuSewa/JangkaWaktuSewaFo
 import JangkaWaktuSewaList from '../components/JangkaWaktuSewa/JangkaWaktuSewaList';
 
 const JangkaWaktuSewaPage = () => {
-    const [reload, setReload] = useState(false);
+    const [editData, setEditData] = useState(null);
+    const [refreshKey, setRefreshKey] = useState(0);
+
+    const handleSuccess = () => {
+        setEditData(null);
+        setRefreshKey(prev => prev + 1);
+    };
 
     return (
         <AdminLayout>
-            <JangkaWaktuSewaForm onSuccess={() => setReload(prev => !prev)} />
+            <JangkaWaktuSewaForm
+                onSuccess={handleSuccess}
+                editData={editData}
+                onCancel={() => setEditData(null)}
+            />
             <hr />
-            <JangkaWaktuSewaList key={reload} />
+            <JangkaWaktuSewaList key={refreshKey} onEdit={setEditData} />
         </AdminLayout>
     );
 };

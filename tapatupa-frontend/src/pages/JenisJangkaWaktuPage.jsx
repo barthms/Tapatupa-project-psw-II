@@ -4,17 +4,27 @@ import JenisJangkaWaktuForm from '../components/JenisJangkaWaktu/JenisJangkaWakt
 import JenisJangkaWaktuList from '../components/JenisJangkaWaktu/JenisJangkaWaktuList';
 
 const JenisJangkaWaktuPage = () => {
-    const [reload, setReload] = React.useState(false);
+    const [reloadTrigger, setReloadTrigger] = React.useState(0);
 
-    const triggerReload = () => setReload(prev => !prev);
+    const triggerReload = () => setReloadTrigger(prev => prev + 1);
+
+    const [selectedData, setSelectedData] = React.useState(null);
 
     return (
         <AdminLayout>
-            <JenisJangkaWaktuForm onSuccess={triggerReload} />
+            <JenisJangkaWaktuForm
+                onSuccess={triggerReload}
+                selectedData={selectedData}
+                setSelectedData={setSelectedData}
+            />
             <hr />
-            <JenisJangkaWaktuList key={reload} />
+            <JenisJangkaWaktuList
+                onEdit={setSelectedData}
+                reloadTrigger={reloadTrigger}
+            />
         </AdminLayout>
     );
 };
+
 
 export default JenisJangkaWaktuPage;

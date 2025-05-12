@@ -5,14 +5,21 @@ import JenisStatusList from '../components/JenisStatus/JenisStatusList';
 
 const JenisStatusPage = () => {
     const [reload, setReload] = React.useState(false);
+    const [editData, setEditData] = React.useState(null);
 
     const triggerReload = () => setReload(prev => !prev);
 
     return (
         <AdminLayout>
-            <JenisStatusForm onSuccess={triggerReload} />
+            <JenisStatusForm 
+                onSuccess={() => {
+                    triggerReload();
+                    setEditData(null); // Reset form ke mode tambah
+                }} 
+                editData={editData} 
+            />
             <hr />
-            <JenisStatusList key={reload} />
+            <JenisStatusList reload={reload} onEdit={setEditData} />
         </AdminLayout>
     );
 };

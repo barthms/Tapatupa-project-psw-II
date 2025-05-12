@@ -17,27 +17,26 @@ class JenisPermohonanController extends Controller
      * Display a listing of the resource.
      */
     public function index(Request $request): AnonymousResourceCollection
-
     {
         $query = JenisPermohonan::query();
-        
+
         // Only show non-deleted items by default
         if (!$request->has('showDeleted') || !$request->showDeleted) {
             $query->where('isDeleted', false);
         }
-        
+
         // Option to include children
         if ($request->has('withChildren') && $request->withChildren) {
             $query->with('children');
         }
-        
+
         // Option to only show root items (no parent)
         if ($request->has('onlyRoot') && $request->onlyRoot) {
             $query->whereNull('parentId');
         }
-        
+
         $jenisPermohonan = $query->get();
-        
+
         return JenisPermohonanResource::collection($jenisPermohonan);
     }
 
@@ -48,7 +47,6 @@ class JenisPermohonanController extends Controller
      * @throws ValidationException
      */
     public function store(Request $request): JenisPermohonanResource
-
     {
         $validated = $request->validate([
             'parentId' => 'nullable|exists:jenisPermohonan,idJenisPermohonan',
@@ -65,17 +63,16 @@ class JenisPermohonanController extends Controller
      * Display the specified resource.
      */
     public function show(Request $request, string $id): JenisPermohonanResource
-
     {
         $query = JenisPermohonan::query();
-        
+
         // Option to include children
         if ($request->has('withChildren') && $request->withChildren) {
             $query->with('children');
         }
-        
+
         $jenisPermohonan = $query->findOrFail($id);
-        
+
         return new JenisPermohonanResource($jenisPermohonan);
     }
 
@@ -86,7 +83,6 @@ class JenisPermohonanController extends Controller
      * @throws ValidationException
      */
     public function update(Request $request, string $id): JenisPermohonanResource
-
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
 
@@ -106,20 +102,19 @@ class JenisPermohonanController extends Controller
 
         return new JenisPermohonanResource($jenisPermohonan);
     }
-  
-  
+
+
     /**
      * Soft delete the specified resource.
      */
     public function destroy(string $id): Response
-
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
         $jenisPermohonan->update(['isDeleted' => true]);
 
         return response()->noContent();
     }
-    
+
     /**
      * Restore a soft-deleted resource.
      */
@@ -127,7 +122,7 @@ class JenisPermohonanController extends Controller
     {
         $jenisPermohonan = JenisPermohonan::findOrFail($id);
         $jenisPermohonan->update(['isDeleted' => false]);
-        
+
         return new JenisPermohonanResource($jenisPermohonan);
     }
 }

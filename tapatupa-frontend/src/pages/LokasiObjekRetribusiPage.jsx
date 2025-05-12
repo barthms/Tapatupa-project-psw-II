@@ -1,24 +1,31 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AdminLayout from '../components/layouts/AdminLayout';
+import LokasiObjekRetribusiForm from '../components/LokasiObjekRetribusi/LokasiObjekRetribusiForm';
 import LokasiObjekRetribusiList from '../components/LokasiObjekRetribusi/LokasiObjekRetribusiList';
-import JenisPermohonanForm from '../components/JenisPermohonan/JenisPermohonanForm';
 
-const JenisPermohonanPage = () => {
-    const [reload, setReload] = React.useState(false);
+const LokasiObjekRetribusiPage = () => {
+    const [reload, setReload] = useState(false);
+    const [editData, setEditData] = useState(null);
 
     const triggerReload = () => {
         setReload(prev => !prev);
+        setEditData(null);
     };
 
     return (
-        <div>
-            <AdminLayout>
-                <JenisPermohonanForm onSuccess={triggerReload} />
-                <hr />
-                <LokasiObjekRetribusiList key={reload} />
-            </AdminLayout>
-        </div>
+        <AdminLayout>
+            <LokasiObjekRetribusiForm
+                onSuccess={triggerReload}
+                editData={editData}
+                onCancel={() => setEditData(null)}
+            />
+            <hr />
+            <LokasiObjekRetribusiList
+                onEdit={(item) => setEditData(item)}
+                reload={reload}
+            />
+        </AdminLayout>
     );
 };
 
-export default JenisPermohonanPage;
+export default LokasiObjekRetribusiPage;

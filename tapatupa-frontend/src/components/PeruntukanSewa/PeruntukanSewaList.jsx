@@ -1,21 +1,33 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { fetchPeruntukanSewa } from '../../api/Api';
+import { fetchPeruntukanSewa, deletePeruntukanSewa } from '../../api/PeruntukanSewaAPI';
 
-const PeruntukanSewaList = () => {
+const PeruntukanSewaList = ({ onEdit }) => {
     const [data, setData] = useState([]);
 
+    const load = async () => {
+        try {
+            const result = await fetchPeruntukanSewa();
+            setData(result);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
-        const load = async () => {
-            try {
-                const result = await fetchPeruntukanSewa();
-                setData(result);
-            } catch (err) {
-                console.error(err);
-            }
-        };
         load();
     }, []);
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Yakin ingin menghapus data ini?')) return;
+        try {
+            await deletePeruntukanSewa(id);
+            alert('Data berhasil dihapus!');
+            load();
+        } catch (err) {
+            console.error(err);
+            alert('Gagal menghapus data!');
+        }
+    };
 
     return (
         <div>
@@ -26,6 +38,7 @@ const PeruntukanSewaList = () => {
                         <th>ID</th>
                         <th>Peruntukan</th>
                         <th>Keterangan</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -34,6 +47,10 @@ const PeruntukanSewaList = () => {
                             <td>{item.idPeruntukanSewa}</td>
                             <td>{item.peruntukanSewa}</td>
                             <td>{item.keterangan}</td>
+                            <td>
+                                <button className="btn btn-warning btn-sm me-2" onClick={() => onEdit(item)}>Edit</button>
+                                <button className="btn btn-danger btn-sm" onClick={() => handleDelete(item.idPeruntukanSewa)}>Hapus</button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

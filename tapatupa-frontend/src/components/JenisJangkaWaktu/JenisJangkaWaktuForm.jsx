@@ -1,8 +1,19 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { createJenisJangkaWaktu, updateJenisJangkaWaktu } from '../../api/JenisJangkaWaktuAPI';
 
-const JenisJangkaWaktuForm = ({ onSuccess }) => {
-    const [form, setForm] = useState({ namaJenisJangkaWaktu: '' });
+const JenisJangkaWaktuForm = ({ onSuccess, selectedData, setSelectedData }) => {
+    const [form, setForm] = useState({ jenisJangkaWaktu: '', keterangan: '' });
+
+    useEffect(() => {
+        if (selectedData) {
+            setForm({
+                jenisJangkaWaktu: selectedData.jenisJangkaWaktu,
+                keterangan: selectedData.keterangan || '',
+            });
+        } else {
+            setForm({ jenisJangkaWaktu: '', keterangan: '' });
+        }
+    }, [selectedData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -12,9 +23,15 @@ const JenisJangkaWaktuForm = ({ onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/jenisJangkaWaktu', form);
-            alert('Data berhasil disimpan!');
-            setForm({ namaJenisJangkaWaktu: '' });
+            if (selectedData) {
+                await updateJenisJangkaWaktu(selectedData.idJenisJangkaWaktu, form);
+                alert('Data berhasil diperbarui!');
+            } else {
+                await createJenisJangkaWaktu(form);
+                alert('Data berhasil disimpan!');
+            }
+            setForm({ jenisJangkaWaktu: '', keterangan: '' });
+            setSelectedData(null);
             if (onSuccess) onSuccess();
         } catch (error) {
             console.error('Gagal menyimpan data:', error);
@@ -24,20 +41,34 @@ const JenisJangkaWaktuForm = ({ onSuccess }) => {
 
     return (
         <div className="card p-4">
-            <h4>Form Jenis Jangka Waktu</h4>
+            <h4>{selectedData ? 'Edit' : 'Tambah'} Jenis Jangka Waktu</h4>
             <form onSubmit={handleSubmit}>
-                <div className="mb-3">
-                    <label className="form-label">Nama Jenis Jangka Waktu</label>
+                <div className="mb-2">
+                    <label className="form-label">Jenis Jangka Waktu</label>
                     <input
                         type="text"
-                        name="namaJenisJangkaWaktu"
+                        name="jenisJangkaWaktu"
                         className="form-control"
-                        value={form.namaJenisJangkaWaktu}
+                        value={form.jenisJangkaWaktu}
                         onChange={handleChange}
                         required
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Simpan</button>
+                <div className="mb-2">
+                    <label className="form-label">Keterangan</label>
+                    <textarea
+                        name="keterangan"
+                        className="form-control"
+                        value={form.keterangan}
+                        onChange={handleChange}
+                    />
+                </div>
+                <button type="submit" className="btn btn-primary">{selectedData ? 'Update' : 'Simpan'}</button>
+                {selectedData && (
+                    <button type="button" className="btn btn-secondary ms-2" onClick={() => setSelectedData(null)}>
+                        Batal
+                    </button>
+                )}
             </form>
         </div>
     );

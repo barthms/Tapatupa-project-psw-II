@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react';
-
 import { fetchJenisPermohonan, createJenisPermohonan } from '../../api/JenisPermohonanAPI';
-
 import axios from 'axios';
 
 const JenisPermohonanForm = ({ onSuccess }) => {

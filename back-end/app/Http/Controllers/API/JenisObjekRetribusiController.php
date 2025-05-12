@@ -46,12 +46,33 @@ class JenisObjekRetribusiController extends Controller
         return response()->json($record);
     }
 
-    public function destroy($id)
+    public function destroy(JenisObjekRetribusi $jenisObjekRetribusi)
     {
-        $record = JenisObjekRetribusi::findOrFail($id);
-        $record->isDeleted = true;
-        $record->save();
+        $jenisObjekRetribusi->isDeleted = true;
+        $jenisObjekRetribusi->save();
 
         return response()->json(['message' => 'Jenis objek retribusi dihapus (soft delete).']);
     }
+
+    public function restore($id)
+    {
+        $data = JenisObjekRetribusi::where('isDeleted', true)->find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan atau belum dihapus'], 404);
+        }
+
+        $data->isDeleted = false;
+        $data->save();
+
+        return response()->json(['message' => 'Data berhasil direstore', 'data' => $data]);
+    }
+
+    public function listDeleted()
+        {
+            $data = JenisObjekRetribusi::where('isDeleted', true)->get();
+            return response()->json($data);
+        }
+    
+
 }

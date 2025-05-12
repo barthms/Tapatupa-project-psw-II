@@ -41,4 +41,18 @@ class JenisJangkaWaktuController extends Controller
         $item->update(['isDeleted' => true]);
         return response()->json(['message' => 'Deleted']);
     }
+
+        public function restore($id)
+    {
+        $data = JenisJangkaWaktu::where('isDeleted', true)->find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan atau belum dihapus'], 404);
+        }
+
+        $data->isDeleted = false;
+        $data->save();
+
+        return response()->json(['message' => 'Data berhasil direstore', 'data' => $data]);
+    }
 }

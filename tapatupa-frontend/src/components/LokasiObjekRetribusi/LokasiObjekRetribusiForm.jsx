@@ -1,47 +1,58 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { createLokasiObjekRetribusi, updateLokasiObjekRetribusi } from '../../api/LokasiObjekRetribusiAPI';
 
-const LokasiObjekRetribusiForm = ({ onSuccess }) => {
-    const [form, setForm] = useState({
-        lokasiObjekRetribusi: ''
-    });
+const LokasiObjekRetribusiForm = ({ onSuccess, editData, onCancel }) => {
+    const [form, setForm] = useState({ lokasiObjekRetribusi: '' });
+
+    useEffect(() => {
+        if (editData) {
+            setForm({ lokasiObjekRetribusi: editData.lokasiObjekRetribusi });
+        } else {
+            setForm({ lokasiObjekRetribusi: '' });
+        }
+    }, [editData]);
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm({ ...form, [e.target.name]: e.target.value });
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/lokasiObjekRetribusi', form);
-            alert('Data berhasil disimpan!');
+            if (editData) {
+                await updateLokasiObjekRetribusi(editData.idLokasiObjekRetribusi, form);
+                alert('Data berhasil diperbarui!');
+            } else {
+                await createLokasiObjekRetribusi(form);
+                alert('Data berhasil disimpan!');
+            }
             setForm({ lokasiObjekRetribusi: '' });
-            if (onSuccess) onSuccess();
-        } catch (error) {
-            console.error('Gagal menyimpan data:', error);
-            alert('Gagal menyimpan data!');
+            onSuccess();
+        } catch (err) {
+            console.error(err);
+            alert('Gagal menyimpan data.');
         }
     };
 
     return (
         <div className="card p-4">
-            <h4>Form Tambah Lokasi Objek Retribusi</h4>
+            <h4>{editData ? 'Edit' : 'Tambah'} Lokasi Objek Retribusi</h4>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="lokasiObjekRetribusi" className="form-label">Lokasi</label>
+                    <label className="form-label">Lokasi</label>
                     <input
                         type="text"
                         name="lokasiObjekRetribusi"
-                        id="lokasiObjekRetribusi"
                         className="form-control"
                         value={form.lokasiObjekRetribusi}
                         onChange={handleChange}
                         required
                     />
                 </div>
-
-                <button type="submit" className="btn btn-primary">Simpan</button>
+                <button type="submit" className="btn btn-primary me-2">{editData ? 'Update' : 'Simpan'}</button>
+                {editData && (
+                    <button type="button" className="btn btn-secondary" onClick={onCancel}>Batal</button>
+                )}
             </form>
         </div>
     );

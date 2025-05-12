@@ -1,20 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import { fetchJenisJangkaWaktu } from '../../api/Api';
+import { fetchJenisJangkaWaktu, deleteJenisJangkaWaktu } from '../../api/JenisJangkaWaktuAPI';
 
-const JenisJangkaWaktuList = () => {
+const JenisJangkaWaktuList = ({ onEdit, reloadTrigger }) => {
     const [data, setData] = useState([]);
 
+    const loadData = async () => {
+        try {
+            const res = await fetchJenisJangkaWaktu();
+            setData(res);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
-        const load = async () => {
+        loadData();
+    }, [reloadTrigger]);
+
+    const handleDelete = async (id) => {
+        if (window.confirm('Yakin ingin menghapus data ini?')) {
             try {
-                const res = await fetchJenisJangkaWaktu();
-                setData(res);
+                await deleteJenisJangkaWaktu(id);
+                alert('Data berhasil dihapus');
+                loadData();
             } catch (err) {
                 console.error(err);
+                alert('Gagal menghapus data');
             }
-        };
-        load();
-    }, []);
+        }
+    };
 
     return (
         <div>
@@ -22,17 +36,30 @@ const JenisJangkaWaktuList = () => {
             <table className="table table-bordered mt-3">
                 <thead>
                     <tr>
-                        <th>ID</th>
-                        <th>Nama</th>
+                        <th>Jenis Jangka Waktu</th>
                         <th>Keterangan</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
                     {data.map((item) => (
                         <tr key={item.idJenisJangkaWaktu}>
-                            <td>{item.idJenisJangkaWaktu}</td>
-                            <td>{item.keterangan}</td>
                             <td>{item.jenisJangkaWaktu}</td>
+                            <td>{item.keterangan}</td>
+                            <td>
+                                <button
+                                    className="btn btn-sm btn-warning me-2"
+                                    onClick={() => onEdit(item)}
+                                >
+                                    Edit
+                                </button>
+                                <button
+                                    className="btn btn-sm btn-danger"
+                                    onClick={() => handleDelete(item.idJenisJangkaWaktu)}
+                                >
+                                    Hapus
+                                </button>
+                            </td>
                         </tr>
                     ))}
                 </tbody>

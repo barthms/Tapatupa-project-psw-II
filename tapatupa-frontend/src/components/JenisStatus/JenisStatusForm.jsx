@@ -1,11 +1,19 @@
-import React, { useState } from 'react';
-import axios from 'axios';
+import React, { useState, useEffect } from 'react';
+import { createJenisStatus, updateJenisStatus } from '../../api/JenisStatusAPI';
 
-const JenisStatusForm = ({ onSuccess }) => {
-    const [form, setForm] = useState({
-        jenisStatus: '',
-        keterangan: ''
-    });
+const JenisStatusForm = ({ onSuccess, editData }) => {
+    const [form, setForm] = useState({ jenisStatus: '', keterangan: '' });
+
+    useEffect(() => {
+        if (editData) {
+            setForm({
+                jenisStatus: editData.jenisStatus,
+                keterangan: editData.keterangan || '',
+            });
+        } else {
+            setForm({ jenisStatus: '', keterangan: '' });
+        }
+    }, [editData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -15,8 +23,13 @@ const JenisStatusForm = ({ onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/jenis-status', form);
-            alert('Data berhasil disimpan!');
+            if (editData) {
+                await updateJenisStatus(editData.idJenisStatus, form);
+                alert('Data berhasil diperbarui!');
+            } else {
+                await createJenisStatus(form);
+                alert('Data berhasil disimpan!');
+            }
             setForm({ jenisStatus: '', keterangan: '' });
             if (onSuccess) onSuccess();
         } catch (error) {
@@ -27,29 +40,31 @@ const JenisStatusForm = ({ onSuccess }) => {
 
     return (
         <div className="card p-4">
-            <h4>Form Jenis Status</h4>
+            <h4>{editData ? 'Edit' : 'Tambah'} Jenis Status</h4>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
-                    <label htmlFor="jenisStatus" className="form-label">Jenis Status</label>
+                    <label className="form-label">Jenis Status</label>
                     <input
                         type="text"
-                        className="form-control"
                         name="jenisStatus"
+                        className="form-control"
                         value={form.jenisStatus}
                         onChange={handleChange}
                         required
                     />
                 </div>
                 <div className="mb-3">
-                    <label htmlFor="keterangan" className="form-label">Keterangan</label>
+                    <label className="form-label">Keterangan</label>
                     <textarea
-                        className="form-control"
                         name="keterangan"
+                        className="form-control"
                         value={form.keterangan}
                         onChange={handleChange}
                     />
                 </div>
-                <button type="submit" className="btn btn-primary">Simpan</button>
+                <button type="submit" className="btn btn-primary">
+                    {editData ? 'Update' : 'Simpan'}
+                </button>
             </form>
         </div>
     );

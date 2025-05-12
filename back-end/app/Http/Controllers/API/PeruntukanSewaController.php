@@ -54,4 +54,18 @@ class PeruntukanSewaController extends Controller
 
         return response()->json(['message' => 'Peruntukan Sewa dihapus (soft delete).']);
     }
+
+    public function restore($id)
+    {
+        $data = PeruntukanSewa::where('isDeleted', true)->find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan atau belum dihapus'], 404);
+        }
+
+        $data->isDeleted = false;
+        $data->save();
+
+        return response()->json(['message' => 'Data berhasil direstore', 'data' => $data]);
+    }
 }
