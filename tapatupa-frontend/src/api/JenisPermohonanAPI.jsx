@@ -2,27 +2,46 @@ import axios from 'axios';
 
 const BASE_URL = 'http://127.0.0.1:8000/api/jenisPermohonan';
 
+// GET: Ambil semua jenis permohonan
 export const fetchJenisPermohonan = async () => {
-    const res = await axios.get(BASE_URL);
-    return res.data;
+    try {
+        const response = await axios.get(BASE_URL);
+        return response.data;
+    } catch (err) {
+        console.error('Gagal fetch jenis permohonan:', err);
+        throw err;
+    }
 };
 
-export const fetchJenisPermohonanById = async (id) => {
-    const res = await axios.get(`${BASE_URL}/${id}`);
-    return res.data;
-};
-
+// POST: Tambah jenis permohonan baru
 export const createJenisPermohonan = async (data) => {
-    const res = await axios.post(BASE_URL, data);
-    return res.data;
+    try {
+        const response = await axios.post(BASE_URL, data);
+        return response.data;
+    } catch (err) {
+        console.error('Gagal tambah jenis permohonan:', err);
+        throw err;
+    }
 };
 
+// PUT: Update jenis permohonan berdasarkan ID
 export const updateJenisPermohonan = async (id, data) => {
-    const res = await axios.put(`${BASE_URL}/${id}`, data);
-    return res.data;
+    try {
+        const response = await axios.put(`${BASE_URL}/${id}`, data);
+        return response.data;
+    } catch (err) {
+        console.error('Gagal update jenis permohonan:', err);
+        throw err;
+    }
 };
 
+// DELETE: Hapus jenis permohonan berdasarkan ID
 export const deleteJenisPermohonan = async (id) => {
-    const res = await axios.delete(`${BASE_URL}/${id}`);
-    return res.data;
+    try {
+        const response = await axios.delete(`${BASE_URL}/${id}`);
+        return response.data;
+    } catch (err) {
+        console.error('Gagal hapus jenis permohonan:', err);
+        throw err;
+    }
 };
