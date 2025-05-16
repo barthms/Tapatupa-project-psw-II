@@ -56,4 +56,18 @@ class StatusController extends Controller
 
         return response()->json(['message' => 'Status dihapus (soft delete).']);
     }
+
+    public function restore($id)
+    {
+        $data = Status::where('isDeleted', true)->find($id);
+
+        if (!$data) {
+            return response()->json(['message' => 'Data tidak ditemukan atau belum dihapus'], 404);
+        }
+
+        $data->isDeleted = false;
+        $data->save();
+
+        return response()->json(['message' => 'Data berhasil direstore', 'data' => $data]);
+    }
 }

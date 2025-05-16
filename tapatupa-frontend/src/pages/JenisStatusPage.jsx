@@ -11,12 +11,13 @@ const JenisStatusPage = () => {
 
     return (
         <AdminLayout>
-            <JenisStatusForm 
+            <JenisStatusForm
                 onSuccess={() => {
                     triggerReload();
                     setEditData(null); // Reset form ke mode tambah
-                }} 
-                editData={editData} 
+                }}
+                editData={editData}
+                setSelectedData={setEditData} // Tambahkan ini agar tombol "Batal" bisa berfungsi
             />
             <hr />
             <JenisStatusList reload={reload} onEdit={setEditData} />

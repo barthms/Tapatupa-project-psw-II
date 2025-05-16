@@ -12,6 +12,7 @@ import WajibRetribusiPage from './pages/WajibRetribusiPage';
 import StatusPage from "./pages/StatusPage";
 import JenisStatusPage from "./pages/JenisStatusPage";
 import PeruntukanSewaPage from "./pages/PeruntukanSewaPage";
+// import UsersPage from "./pages/userspage";
 
 export default function App() {
     return (
@@ -30,6 +31,7 @@ export default function App() {
                 <Route path="/status" element={<StatusPage />} />
                 <Route path="/jenisStatus" element={<JenisStatusPage />} />
                 <Route path="/peruntukanSewa" element={<PeruntukanSewaPage />} />
+                {/* <Rute path="/users" element={<UsersPage />} /> */}
             </Routes>
         </Router>
     );

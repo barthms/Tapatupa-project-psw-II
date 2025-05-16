@@ -1,20 +1,27 @@
-import React from 'react';
+// components/permohonanSewa/PermohonanSewaPage.jsx
+import React, { useState } from 'react';
+import PermohonanSewaList from '../components/permohonanSewa/PermohonanSewaList';
+import PermohonanSewaForm from '../components/permohonanSewa/PermohonanSewaForm';
 import AdminLayout from '../components/layouts/AdminLayout';
-import PermohonanSewaForm from '../components/PermohonanSewa/PermohonanSewaForm';
-import PermohonanSewaList from '../components/PermohonanSewa/PermohonanSewaList';
+
 
 const PermohonanSewaPage = () => {
-    const [reload, setReload] = React.useState(false);
+    const [reloadTrigger, setReloadTrigger] = useState(0);
+    const [editingData, setEditingData] = useState(null);
 
-    const triggerReload = () => {
-        setReload(prev => !prev);
+    const handleSuccess = () => {
+        setReloadTrigger(prev => prev + 1);
+        setEditingData(null);
     };
 
     return (
         <AdminLayout>
-            <PermohonanSewaForm onSuccess={triggerReload} />
-            <hr />
-            <PermohonanSewaList key={reload} />
+            <div className="container mt-4">
+                <h2 className="mb-4">Form Permohonan Sewa</h2>
+                <PermohonanSewaForm editingData={editingData} onSuccess={handleSuccess} />
+                <hr />
+                <PermohonanSewaList onEdit={setEditingData} reloadTrigger={reloadTrigger} />
+            </div>
         </AdminLayout>
     );
 };

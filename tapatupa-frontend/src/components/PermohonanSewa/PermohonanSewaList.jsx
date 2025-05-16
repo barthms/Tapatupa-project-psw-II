@@ -1,44 +1,66 @@
+// components/permohonanSewa/PermohonanSewaList.jsx
 import React, { useEffect, useState } from 'react';
-import { fetchPermohonanSewa } from '../../api/Api';
+import { fetchPermohonanSewa, deletePermohonanSewa } from '../../api/PermohonanSewaAPI';
 
-const PermohonanSewaList = () => {
+const PermohonanSewaList = ({ onEdit, reloadTrigger }) => {
     const [data, setData] = useState([]);
 
+    const loadData = async () => {
+        try {
+            const res = await fetchPermohonanSewa();
+            setData(res);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     useEffect(() => {
-        const load = async () => {
-            try {
-                const res = await fetchPermohonanSewa();
-                setData(res);
-            } catch (err) {
-                console.error(err);
-            }
-        };
-        load();
-    }, []);
+        loadData();
+    }, [reloadTrigger]);
+
+    const handleDelete = async (id) => {
+        if (!window.confirm('Yakin ingin menghapus permohonan ini?')) return;
+        await deletePermohonanSewa(id);
+        loadData();
+    };
 
     return (
         <div>
-            <h3>Daftar Permohonan Sewa</h3>
-            <table className="table table-bordered mt-3">
+            <h4>Daftar Permohonan Sewa</h4>
+            <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>No</th>
-                        <th>Nomor Surat</th>
-                        <th>Tanggal</th>
+                        <th>No. Surat</th>
+                        <th>Jenis</th>
+                        <th>Wajib Retribusi</th>
+                        <th>Objek</th>
+                        <th>Tgl Pengajuan</th>
                         <th>Lama Sewa</th>
                         <th>Status</th>
+                        <th>Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {data.map((item, i) => (
+                    {data.map(item => (
                         <tr key={item.idPermohonanSewa}>
-                            <td>{i + 1}</td>
                             <td>{item.nomorSuratPermohonan}</td>
+                            <td>{item.jenis_permohonan?.jenisPermohonan}</td>
+                            <td>{item.wajib_retribusi?.namaWajibRetribusi}</td>
+                            <td>{item.objek_retribusi?.objekRetribusi}</td>
                             <td>{item.tanggalPengajuan}</td>
                             <td>{item.lamaSewa}</td>
-                            <td>{item.idStatus}</td>
+                            <td>{item.status?.namaStatus}</td>
+                            <td>
+                                <button onClick={() => onEdit(item)} className="btn btn-sm btn-warning me-2">Edit</button>
+                                <button onClick={() => handleDelete(item.idPermohonanSewa)} className="btn btn-sm btn-danger">Hapus</button>
+                            </td>
                         </tr>
                     ))}
+                    {data.length === 0 && (
+                        <tr>
+                            <td colSpan="8" className="text-center">Tidak ada data.</td>
+                        </tr>
+                    )}
                 </tbody>
             </table>
         </div>

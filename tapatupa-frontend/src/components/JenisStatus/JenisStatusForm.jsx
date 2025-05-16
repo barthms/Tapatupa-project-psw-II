@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createJenisStatus, updateJenisStatus } from '../../api/JenisStatusAPI';
 
-const JenisStatusForm = ({ onSuccess, editData }) => {
+const JenisStatusForm = ({ onSuccess, editData, setSelectedData }) => {
     const [form, setForm] = useState({ jenisStatus: '', keterangan: '' });
 
     useEffect(() => {
@@ -31,6 +31,7 @@ const JenisStatusForm = ({ onSuccess, editData }) => {
                 alert('Data berhasil disimpan!');
             }
             setForm({ jenisStatus: '', keterangan: '' });
+            setSelectedData(null);
             if (onSuccess) onSuccess();
         } catch (error) {
             console.error('Gagal menyimpan data:', error);
@@ -65,6 +66,18 @@ const JenisStatusForm = ({ onSuccess, editData }) => {
                 <button type="submit" className="btn btn-primary">
                     {editData ? 'Update' : 'Simpan'}
                 </button>
+                {editData && (
+                    <button
+                        type="button"
+                        className="btn btn-secondary ms-2"
+                        onClick={() => {
+                            setForm({ jenisStatus: '', keterangan: '' });
+                            setSelectedData(null);
+                        }}
+                    >
+                        Batal
+                    </button>
+                )}
             </form>
         </div>
     );

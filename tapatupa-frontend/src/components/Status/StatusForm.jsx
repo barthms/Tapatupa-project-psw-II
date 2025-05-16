@@ -1,28 +1,34 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { fetchJenisStatus } from '../../api/Api';
+import { fetchJenisStatus } from '../../api/JenisStatusAPI';
+import { createStatus, updateStatus } from '../../api/StatusAPI';
 
-const StatusForm = ({ onSuccess }) => {
+const StatusForm = ({ onSuccess, selectedData, setSelectedData }) => {
     const [form, setForm] = useState({
         idJenisStatus: '',
         namaStatus: '',
         keterangan: ''
     });
-
     const [jenisOptions, setJenisOptions] = useState([]);
 
     useEffect(() => {
-        const loadOptions = async () => {
-            try {
-                const res = await fetchJenisStatus();
-                setJenisOptions(res);
-            } catch (error) {
-                console.error('Gagal memuat jenis status:', error);
-            }
+        const loadJenis = async () => {
+            const result = await fetchJenisStatus();
+            setJenisOptions(result);
         };
-
-        loadOptions();
+        loadJenis();
     }, []);
+
+    useEffect(() => {
+        if (selectedData) {
+            setForm({
+                idJenisStatus: selectedData.idJenisStatus,
+                namaStatus: selectedData.namaStatus,
+                keterangan: selectedData.keterangan || ''
+            });
+        } else {
+            setForm({ idJenisStatus: '', namaStatus: '', keterangan: '' });
+        }
+    }, [selectedData]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -32,19 +38,24 @@ const StatusForm = ({ onSuccess }) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.post('/api/status', form);
+            if (selectedData) {
+                await updateStatus(selectedData.idStatus, form);
+            } else {
+                await createStatus(form);
+            }
             alert('Data berhasil disimpan!');
+            onSuccess();
             setForm({ idJenisStatus: '', namaStatus: '', keterangan: '' });
-            if (onSuccess) onSuccess();
-        } catch (error) {
-            console.error('Gagal menyimpan data:', error);
-            alert('Gagal menyimpan data!');
+            setSelectedData(null);
+        } catch (err) {
+            console.error('Gagal menyimpan data:', err);
+            alert('Terjadi kesalahan saat menyimpan data.');
         }
     };
 
     return (
         <div className="card p-4">
-            <h4>Form Status</h4>
+            <h4>{selectedData ? 'Edit Status' : 'Tambah Status'}</h4>
             <form onSubmit={handleSubmit}>
                 <div className="mb-3">
                     <label htmlFor="idJenisStatus" className="form-label">Jenis Status</label>
@@ -58,7 +69,7 @@ const StatusForm = ({ onSuccess }) => {
                         <option value="">-- Pilih Jenis Status --</option>
                         {jenisOptions.map(opt => (
                             <option key={opt.idJenisStatus} value={opt.idJenisStatus}>
-                                {opt.namaJenisStatus}
+                                {opt.jenisStatus}
                             </option>
                         ))}
                     </select>
@@ -86,7 +97,20 @@ const StatusForm = ({ onSuccess }) => {
                     />
                 </div>
 
-                <button type="submit" className="btn btn-primary">Simpan</button>
+                <div>
+                    <button type="submit" className="btn btn-primary me-2">
+                        {selectedData ? 'Update' : 'Simpan'}
+                    </button>
+                    {selectedData && (
+                        <button
+                            type="button"
+                            className="btn btn-secondary"
+                            onClick={() => setSelectedData(null)}
+                        >
+                            Batal
+                        </button>
+                    )}
+                </div>
             </form>
         </div>
     );

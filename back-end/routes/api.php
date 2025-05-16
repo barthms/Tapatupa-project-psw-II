@@ -22,11 +22,6 @@ Route::get('/user', function (Request $request) {
 
 Route::apiResource('/jenisPermohonan', JenisPermohonanController::class);
 Route::apiResource('/jangkaWaktuSewa', JangkaWaktuSewaController::class);
-Route::apiResource('/permohonanSewa', PermohonanSewaController::class);
-Route::apiResource('/status', StatusController::class);
-Route::apiResource('/tarifObjekRetribusi', TarifObjekRetribusiController::class);
-Route::apiResource('/wajibRetribusi', WajibRetribusiController::class);
-Route::apiResource('/objekRetribusi', ObjekRetribusiController::class);
 // JenisObjekRetribusi
 Route::apiResource('/jenisObjekRetribusi', JenisObjekRetribusiController::class);
 Route::patch('/jenisObjekRetribusi/restore/{id}', [JenisObjekRetribusiController::class, 'restore']);
@@ -43,13 +38,33 @@ Route::apiResource('/jenisStatus', JenisStatusController::class);
 Route::patch('/jenisStatus/restore/{id}', [JenisStatusController::class, 'restore']);
 // listDeleted not yet implemented
 
+// Status
+Route::apiResource('/status', StatusController::class);
+Route::patch('/status/restore/{id}', [StatusController::class, 'restore']);
+
 // LokasiObjekRetribusi
 Route::apiResource('/lokasiObjekRetribusi', LokasiObjekRetribusiController::class);
 Route::patch('/lokasiObjekRetribusi/restore/{id}', [LokasiObjekRetribusiController::class, 'restore']);
 
+// tarifObjekRetribusi
+Route::apiResource('/tarifObjekRetribusi', TarifObjekRetribusiController::class);
+Route::patch('/tarifObjekRetribusi/restore/{id}', [TarifObjekRetribusiController::class, 'restore']);
+
 // PeruntukanSewa
 Route::apiResource('/peruntukanSewa', PeruntukanSewaController::class);
 Route::patch('/peruntukanSewa/restore/{id}', [PeruntukanSewaController::class, 'restore']);
+
+// wajibRetribusi
+Route::apiResource('/wajibRetribusi', WajibRetribusiController::class);
+Route::patch('/wajibRetribusi/restore/{id}', [WajibRetribusiController::class, 'restore']);
+
+// objekRetribusi
+Route::apiResource('/objekRetribusi', ObjekRetribusiController::class);
+Route::patch('/objekRetribusi/restore/{id}', [ObjekRetribusiController::class, 'restore']);
+
+// permohonanSewa
+Route::patch('/permohonanSewa/restore/{id}', [PermohonanSewaController::class, 'restore']);
+Route::apiResource('/permohonanSewa', PermohonanSewaController::class);
 
 // Route::apiResource('/auth', AuthController::class);
 Route::prefix('auth')->group(function () {

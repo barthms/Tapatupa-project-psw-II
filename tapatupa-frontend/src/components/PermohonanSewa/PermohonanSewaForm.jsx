@@ -1,41 +1,56 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
-    fetchJenisPermohonan,
-    fetchWajibRetribusi,
-    fetchObjekRetribusi,
-    fetchJenisJangkaWaktu,
-    fetchPeruntukanSewa,
-    fetchStatus
-} from '../../api/Api';
+    createPermohonanSewa,
+    updatePermohonanSewa
+} from '../../api/PermohonanSewaAPI';
 
-const PermohonanSewaForm = ({ onSuccess }) => {
-    const [form, setForm] = useState({
-        idJenisPermohonan: '',
-        nomorSuratPermohonan: '',
-        tanggalPengajuan: '',
-        idWajibRetribusi: '',
-        idObjekRetribusi: '',
-        idJenisJangkaWaktu: '',
-        lamaSewa: '',
-        idPeruntukanSewa: '',
-        idStatus: '',
-        createBy: ''
-    });
+import { fetchJenisPermohonan } from '../../api/JenisPermohonanAPI';
+import { fetchWajibRetribusi } from '../../api/WajibRetribusiAPI';
+import { fetchObjekRetribusi } from '../../api/ObjekRetribusiAPI';
+import { fetchJenisJangkaWaktu } from '../../api/JenisJangkaWaktuAPI';
+import { fetchPeruntukanSewa } from '../../api/PeruntukanSewaAPI';
+import { fetchStatus } from '../../api/StatusAPI';
 
-    const [options, setOptions] = useState({
-        jenisPermohonan: [],
-        wajibRetribusi: [],
-        objekRetribusi: [],
-        jenisJangkaWaktu: [],
-        peruntukanSewa: [],
+const initialState = {
+    idJenisPermohonan: '',
+    nomorSuratPermohonan: '',
+    tanggalPengajuan: '',
+    idWajibRetribusi: '',
+    idObjekRetribusi: '',
+    idJenisJangkaWaktu: '',
+    lamaSewa: '',
+    idPeruntukanSewa: '',
+    idStatus: '',
+    createBy: 1,
+};
+
+const PermohonanSewaForm = ({ editingData, onSuccess }) => {
+    const [form, setForm] = useState(initialState);
+    const [dropdowns, setDropdowns] = useState({
+        jenis: [],
+        wajib: [],
+        objek: [],
+        jangka: [],
+        peruntukan: [],
         status: []
     });
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
-        const loadOptions = async () => {
+        if (editingData) {
+            setForm({
+                ...editingData,
+                lamaSewa: editingData.lamaSewa?.toString() || ''
+            });
+        } else {
+            setForm(initialState);
+        }
+    }, [editingData]);
+
+    useEffect(() => {
+        const loadDropdowns = async () => {
             try {
-                const [a, b, c, d, e, f] = await Promise.all([
+                const [jenis, wajib, objek, jangka, peruntukan, status] = await Promise.all([
                     fetchJenisPermohonan(),
                     fetchWajibRetribusi(),
                     fetchObjekRetribusi(),
@@ -43,129 +58,134 @@ const PermohonanSewaForm = ({ onSuccess }) => {
                     fetchPeruntukanSewa(),
                     fetchStatus()
                 ]);
-                setOptions({
-                    jenisPermohonan: a,
-                    wajibRetribusi: b,
-                    objekRetribusi: c,
-                    jenisJangkaWaktu: d,
-                    peruntukanSewa: e,
-                    status: f
-                });
-            } catch (err) {
-                console.error(err);
+                setDropdowns({ jenis, wajib, objek, jangka, peruntukan, status });
+            } catch (error) {
+                console.error('Gagal memuat data dropdown:', error);
             }
         };
-        loadOptions();
+        loadDropdowns();
     }, []);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setForm(prev => ({ ...prev, [name]: value }));
+        setForm(prev => ({
+            ...prev,
+            [name]: name === 'lamaSewa' ? parseInt(value || 0) : value
+        }));
     };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setLoading(true);
         try {
-            await axios.post('/api/permohonanSewa', form);
-            alert('Data berhasil disimpan!');
-            setForm({
-                idJenisPermohonan: '',
-                nomorSuratPermohonan: '',
-                tanggalPengajuan: '',
-                idWajibRetribusi: '',
-                idObjekRetribusi: '',
-                idJenisJangkaWaktu: '',
-                lamaSewa: '',
-                idPeruntukanSewa: '',
-                idStatus: '',
-                createBy: ''
-            });
+            if (form.idPermohonanSewa) {
+                await updatePermohonanSewa(form.idPermohonanSewa, form);
+            } else {
+                await createPermohonanSewa(form);
+            }
             onSuccess();
+            setForm(initialState);
         } catch (err) {
             console.error(err);
-            alert('Gagal menyimpan data!');
+            alert('Gagal menyimpan data.');
+        } finally {
+            setLoading(false);
         }
     };
 
     return (
-        <div className="card p-4">
-            <h4>Form Permohonan Sewa</h4>
-            <form onSubmit={handleSubmit}>
-                <div className="row">
-                    <div className="col-md-6 mb-3">
-                        <label>Jenis Permohonan</label>
-                        <select name="idJenisPermohonan" className="form-control" value={form.idJenisPermohonan} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.jenisPermohonan.map(j => (
-                                <option key={j.idJenisPermohonan} value={j.idJenisPermohonan}>{j.jenisPermohonan}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Nomor Surat</label>
-                        <input name="nomorSuratPermohonan" className="form-control" value={form.nomorSuratPermohonan} onChange={handleChange} required />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Tanggal Pengajuan</label>
-                        <input type="date" name="tanggalPengajuan" className="form-control" value={form.tanggalPengajuan} onChange={handleChange} required />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Wajib Retribusi</label>
-                        <select name="idWajibRetribusi" className="form-control" value={form.idWajibRetribusi} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.wajibRetribusi.map(w => (
-                                <option key={w.idWajibRetribusi} value={w.idWajibRetribusi}>{w.nama}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Objek Retribusi</label>
-                        <select name="idObjekRetribusi" className="form-control" value={form.idObjekRetribusi} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.objekRetribusi.map(o => (
-                                <option key={o.idObjekRetribusi} value={o.idObjekRetribusi}>{o.namaObjek}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Jenis Jangka Waktu</label>
-                        <select name="idJenisJangkaWaktu" className="form-control" value={form.idJenisJangkaWaktu} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.jenisJangkaWaktu.map(jw => (
-                                <option key={jw.idJenisJangkaWaktu} value={jw.idJenisJangkaWaktu}>{jw.nama}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Lama Sewa</label>
-                        <input type="number" name="lamaSewa" className="form-control" value={form.lamaSewa} onChange={handleChange} />
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Peruntukan</label>
-                        <select name="idPeruntukanSewa" className="form-control" value={form.idPeruntukanSewa} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.peruntukanSewa.map(p => (
-                                <option key={p.idPeruntukanSewa} value={p.idPeruntukanSewa}>{p.namaPeruntukan}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Status</label>
-                        <select name="idStatus" className="form-control" value={form.idStatus} onChange={handleChange}>
-                            <option value="">Pilih</option>
-                            {options.status.map(s => (
-                                <option key={s.idStatus} value={s.idStatus}>{s.namaStatus}</option>
-                            ))}
-                        </select>
-                    </div>
-                    <div className="col-md-6 mb-3">
-                        <label>Created By (user id)</label>
-                        <input type="number" name="createBy" className="form-control" value={form.createBy} onChange={handleChange} />
-                    </div>
-                </div>
-                <button className="btn btn-primary">Simpan</button>
-            </form>
-        </div>
+        <form onSubmit={handleSubmit}>
+            <h4>{form.idPermohonanSewa ? 'Edit' : 'Tambah'} Permohonan Sewa</h4>
+
+            {/* Jenis Permohonan */}
+            <div className="mb-2">
+                <label>Jenis Permohonan</label>
+                <select className="form-control" name="idJenisPermohonan" value={form.idJenisPermohonan} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.jenis.map(j => (
+                        <option key={j.idJenisPermohonan} value={j.idJenisPermohonan}>{j.jenisPermohonan}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Nomor Surat */}
+            <div className="mb-2">
+                <label>Nomor Surat</label>
+                <input className="form-control" name="nomorSuratPermohonan" value={form.nomorSuratPermohonan} onChange={handleChange} required />
+            </div>
+
+            {/* Tanggal */}
+            <div className="mb-2">
+                <label>Tanggal Pengajuan</label>
+                <input type="date" className="form-control" name="tanggalPengajuan" value={form.tanggalPengajuan} onChange={handleChange} required />
+            </div>
+
+            {/* Wajib Retribusi */}
+            <div className="mb-2">
+                <label>Wajib Retribusi</label>
+                <select className="form-control" name="idWajibRetribusi" value={form.idWajibRetribusi} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.wajib.map(w => (
+                        <option key={w.idWajibRetribusi} value={w.idWajibRetribusi}>{w.namaWajibRetribusi}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Objek Retribusi */}
+            <div className="mb-2">
+                <label>Objek Retribusi</label>
+                <select className="form-control" name="idObjekRetribusi" value={form.idObjekRetribusi} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.objek.map(o => (
+                        <option key={o.idObjekRetribusi} value={o.idObjekRetribusi}>{o.namaObjek}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Jenis Jangka Waktu */}
+            <div className="mb-2">
+                <label>Jenis Jangka Waktu</label>
+                <select className="form-control" name="idJenisJangkaWaktu" value={form.idJenisJangkaWaktu} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.jangka.map(j => (
+                        <option key={j.idJenisJangkaWaktu} value={j.idJenisJangkaWaktu}>{j.jenisJangkaWaktu}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Lama Sewa */}
+            <div className="mb-2">
+                <label>Lama Sewa (dalam angka)</label>
+                <input type="number" className="form-control" name="lamaSewa" value={form.lamaSewa} onChange={handleChange} required min="1" />
+            </div>
+
+            {/* Peruntukan Sewa */}
+            <div className="mb-2">
+                <label>Peruntukan Sewa</label>
+                <select className="form-control" name="idPeruntukanSewa" value={form.idPeruntukanSewa} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.peruntukan.map(p => (
+                        <option key={p.idPeruntukanSewa} value={p.idPeruntukanSewa}>{p.peruntukanSewa}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Status */}
+            <div className="mb-2">
+                <label>Status</label>
+                <select className="form-control" name="idStatus" value={form.idStatus} onChange={handleChange} required>
+                    <option value="">-- Pilih --</option>
+                    {dropdowns.status.map(s => (
+                        <option key={s.idStatus} value={s.idStatus}>{s.status}</option>
+                    ))}
+                </select>
+            </div>
+
+            {/* Tombol Submit */}
+            <button type="submit" className="btn btn-primary" disabled={loading}>
+                {loading ? 'Menyimpan...' : form.idPermohonanSewa ? 'Update' : 'Simpan'}
+            </button>
+        </form>
     );
 };
 
