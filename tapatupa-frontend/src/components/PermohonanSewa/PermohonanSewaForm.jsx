@@ -35,30 +35,80 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
         status: []
     });
     const [loading, setLoading] = useState(false);
+    const [dropdownReady, setDropdownReady] = useState(false);
+    const [flattenedJenisOptions, setFlattenedJenisOptions] = useState([]);
 
     useEffect(() => {
         if (editingData) {
             setForm({
                 ...editingData,
-                lamaSewa: editingData.lamaSewa?.toString() || ''
+                lamaSewa: editingData.lamaSewa ? String(editingData.lamaSewa) : ''
             });
         } else {
             setForm(initialState);
         }
     }, [editingData]);
 
+    // Function to flatten hierarchical data for the dropdown
+    const flattenJenisPermohonan = (items, depth = 0, result = []) => {
+        if (!items || !Array.isArray(items)) return result;
+        
+        items.forEach(item => {
+            // Add the current item with indentation based on depth
+            result.push({
+                ...item,
+                displayName: `${'\u00A0'.repeat(depth * 4)}${depth > 0 ? '└─ ' : ''}${item.jenisPermohonan}`
+            });
+            
+            // Process children if they exist
+            if (item.children && Array.isArray(item.children)) {
+                flattenJenisPermohonan(item.children, depth + 1, result);
+            }
+        });
+        
+        return result;
+    };
+
     useEffect(() => {
         const loadDropdowns = async () => {
             try {
-                const [jenis, wajib, objek, jangka, peruntukan, status] = await Promise.all([
-                    fetchJenisPermohonan(),
+                // Fetch data with hierarchical structure for JenisPermohonan
+                const jenisData = await fetchJenisPermohonan(true);
+                
+                const [wajib, objek, jangka, peruntukan, status] = await Promise.all([
                     fetchWajibRetribusi(),
                     fetchObjekRetribusi(),
                     fetchJenisJangkaWaktu(),
                     fetchPeruntukanSewa(),
                     fetchStatus()
                 ]);
-                setDropdowns({ jenis, wajib, objek, jangka, peruntukan, status });
+                
+                // Get the data from the response
+                const jenisItems = jenisData.data || jenisData;
+                
+                // Flatten the hierarchical data for the dropdown
+                const flattenedJenis = flattenJenisPermohonan(jenisItems);
+                setFlattenedJenisOptions(flattenedJenis);
+                
+                console.log('Dropdown data loaded:', { 
+                    jenis: jenisItems, 
+                    flattened: flattenedJenis,
+                    wajib, 
+                    objek, 
+                    jangka, 
+                    peruntukan, 
+                    status 
+                });
+                
+                setDropdowns({
+                    jenis: Array.isArray(jenisItems) ? jenisItems : [],
+                    wajib: Array.isArray(wajib) ? wajib : [],
+                    objek: Array.isArray(objek) ? objek : [],
+                    jangka: Array.isArray(jangka) ? jangka : [],
+                    peruntukan: Array.isArray(peruntukan) ? peruntukan : [],
+                    status: Array.isArray(status) ? status : [],
+                });
+                setDropdownReady(true);
             } catch (error) {
                 console.error('Gagal memuat data dropdown:', error);
             }
@@ -93,6 +143,10 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
         }
     };
 
+    if (!dropdownReady) {
+        return <div>Memuat data formulir...</div>;
+    }
+
     return (
         <form onSubmit={handleSubmit}>
             <h4>{form.idPermohonanSewa ? 'Edit' : 'Tambah'} Permohonan Sewa</h4>
@@ -102,8 +156,10 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <label>Jenis Permohonan</label>
                 <select className="form-control" name="idJenisPermohonan" value={form.idJenisPermohonan} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
-                    {dropdowns.jenis.map(j => (
-                        <option key={j.idJenisPermohonan} value={j.idJenisPermohonan}>{j.jenisPermohonan}</option>
+                    {flattenedJenisOptions.map(j => (
+                        <option key={j.idJenisPermohonan} value={j.idJenisPermohonan}>
+                            {j.displayName}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -114,7 +170,7 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <input className="form-control" name="nomorSuratPermohonan" value={form.nomorSuratPermohonan} onChange={handleChange} required />
             </div>
 
-            {/* Tanggal */}
+            {/* Tanggal Pengajuan */}
             <div className="mb-2">
                 <label>Tanggal Pengajuan</label>
                 <input type="date" className="form-control" name="tanggalPengajuan" value={form.tanggalPengajuan} onChange={handleChange} required />
@@ -126,7 +182,9 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <select className="form-control" name="idWajibRetribusi" value={form.idWajibRetribusi} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
                     {dropdowns.wajib.map(w => (
-                        <option key={w.idWajibRetribusi} value={w.idWajibRetribusi}>{w.namaWajibRetribusi}</option>
+                        <option key={w.idWajibRetribusi} value={w.idWajibRetribusi}>
+                            {w.namaWajibRetribusi}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -137,7 +195,9 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <select className="form-control" name="idObjekRetribusi" value={form.idObjekRetribusi} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
                     {dropdowns.objek.map(o => (
-                        <option key={o.idObjekRetribusi} value={o.idObjekRetribusi}>{o.namaObjek}</option>
+                        <option key={o.idObjekRetribusi} value={o.idObjekRetribusi}>
+                            {o.objekRetribusi}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -148,7 +208,9 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <select className="form-control" name="idJenisJangkaWaktu" value={form.idJenisJangkaWaktu} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
                     {dropdowns.jangka.map(j => (
-                        <option key={j.idJenisJangkaWaktu} value={j.idJenisJangkaWaktu}>{j.jenisJangkaWaktu}</option>
+                        <option key={j.idJenisJangkaWaktu} value={j.idJenisJangkaWaktu}>
+                            {j.jenisJangkaWaktu}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -165,7 +227,9 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <select className="form-control" name="idPeruntukanSewa" value={form.idPeruntukanSewa} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
                     {dropdowns.peruntukan.map(p => (
-                        <option key={p.idPeruntukanSewa} value={p.idPeruntukanSewa}>{p.peruntukanSewa}</option>
+                        <option key={p.idPeruntukanSewa} value={p.idPeruntukanSewa}>
+                            {p.peruntukanSewa}
+                        </option>
                     ))}
                 </select>
             </div>
@@ -176,7 +240,9 @@ const PermohonanSewaForm = ({ editingData, onSuccess }) => {
                 <select className="form-control" name="idStatus" value={form.idStatus} onChange={handleChange} required>
                     <option value="">-- Pilih --</option>
                     {dropdowns.status.map(s => (
-                        <option key={s.idStatus} value={s.idStatus}>{s.status}</option>
+                        <option key={s.idStatus} value={s.idStatus}>
+                            {s.namaStatus}
+                        </option>
                     ))}
                 </select>
             </div>
