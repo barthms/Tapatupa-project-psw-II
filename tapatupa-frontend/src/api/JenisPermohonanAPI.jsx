@@ -3,9 +3,14 @@ import axios from 'axios';
 const BASE_URL = 'http://127.0.0.1:8000/api/jenisPermohonan';
 
 // GET: Ambil semua jenis permohonan
-export const fetchJenisPermohonan = async () => {
+export const fetchJenisPermohonan = async (withHierarchy = true) => {
     try {
-        const response = await axios.get(BASE_URL);
+        // If we want hierarchical data, add the query parameters
+        const url = withHierarchy 
+            ? `${BASE_URL}?withChildren=true&onlyRoot=true` 
+            : BASE_URL;
+            
+        const response = await axios.get(url);
         return response.data;
     } catch (err) {
         console.error('Gagal fetch jenis permohonan:', err);

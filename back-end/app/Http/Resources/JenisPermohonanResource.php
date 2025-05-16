@@ -15,7 +15,7 @@ class JenisPermohonanResource extends JsonResource
     public function toArray(Request $request): array
     {
         return [
-            'id' => $this->idJenisPermohonan,
+            'idJenisPermohonan' => $this->idJenisPermohonan,
             'parentId' => $this->parentId,
             'jenisPermohonan' => $this->jenisPermohonan,
             'isDeleted' => $this->isDeleted,
